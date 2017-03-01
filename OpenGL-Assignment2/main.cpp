@@ -1,6 +1,7 @@
 #include "Renderer.h"
 
 void mouse_button_callback(GLFWwindow* window, int button, int action, int mods);
+glm::vec2 screenToModel(glm::vec2 point);
 
 //enum state { INPUT_PROFILE, INPUT_TRAJECTORY, RENDER };
 //enum sweepType { TRANSLATIONAL, ROTATIONAL };
@@ -46,6 +47,7 @@ int main()
 
 	// Setup OpenGL options
 	//glEnable(GL_DEPTH_TEST);
+	glPointSize(6);
 	glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
 
 	Renderer& renderer = Renderer::getInstance();
@@ -80,7 +82,7 @@ void mouse_button_callback(GLFWwindow* window, int button, int action, int mods)
 			double xPos, yPos;
 			glfwGetCursorPos(window, &xPos, &yPos);
 			std::cout << "Adding point to curve 1 - x: " << xPos << ", y: " << yPos << std::endl;
-			Renderer::getInstance().AddPoint(glm::vec2(xPos, yPos));
+			Renderer::getInstance().AddPoint(screenToModel(glm::vec2(xPos, yPos)));
 		}
 		else if (action == GLFW_RELEASE)
 		{
@@ -89,10 +91,15 @@ void mouse_button_callback(GLFWwindow* window, int button, int action, int mods)
 
 	}
 
-	//if (button == GLFW_MOUSE_BUTTON_2)
-	//{
-	//	if (action == GLFW_PRESS)
-	//	{
+	if (button == GLFW_MOUSE_BUTTON_2)
+	{
+		
+
+
+
+		if (action == GLFW_PRESS)
+		{
+			Renderer::getInstance().outputClicks();
 	//		mouse[1] = true;
 	//		/*std::cout << "Clicks 1:" << std::endl;
 	//		for (auto const& click : mouseClicks1)
@@ -105,12 +112,23 @@ void mouse_button_callback(GLFWwindow* window, int button, int action, int mods)
 	//			std::cout << "X: " << click.x << "Y: " << click.y << std::endl;
 	//		}*/
 
-	//	}
+		}
 	//	else if (action == GLFW_RELEASE)
 	//	{
 	//		mouse[1] = false;
 	//	}
 
-	//}
+	}
 
+}
+
+glm::vec2 screenToModel(const glm::vec2 point)
+{
+	int src_min_x = 0, src_max_x = 800, src_min_y = 800, src_max_y = 0, res_min = -1, res_max = 1;
+	GLfloat x, y;
+	std::cout << "X:" << point.x << " , Y:" << point.y << std::endl;
+	x = (point.x - src_min_x) / (src_max_x - src_min_x) * (res_max - res_min) + res_min;
+	y = (point.y - src_min_y) / (src_max_y - src_min_y) * (res_max - res_min) + res_min;
+	std::cout << "X':" << std::endl << x << " , Y':" << y << std::endl;
+	return glm::vec2(x, y);
 }

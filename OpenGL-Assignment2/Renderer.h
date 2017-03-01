@@ -17,11 +17,13 @@ public:
 	static Renderer& getInstance();
 	void Render();
 	void AddPoint(const glm::vec2 & point);
+	void outputClicks();
 
 private: 
 	Renderer();
 	Shader* shader;
 	std::vector<glm::vec3> clicks;
 	GLuint m_vao, m_vbo;
+	glm::vec3 Renderer::screenToModel(glm::vec3 point);
 };
 
