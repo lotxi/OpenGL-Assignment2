@@ -1,6 +1,9 @@
 #include "Renderer.h"
+#include "CurveGenerator.h"
+#include "../glm/glm.hpp"
 
 void mouse_button_callback(GLFWwindow* window, int button, int action, int mods);
+void key_callback(GLFWwindow* window, int key, int scancode, int action, int mode);
 glm::vec2 screenToModel(glm::vec2 point);
 
 //enum state { INPUT_PROFILE, INPUT_TRAJECTORY, RENDER };
@@ -10,6 +13,8 @@ glm::vec2 screenToModel(glm::vec2 point);
 
 bool keys[1024];
 bool mouse[2];
+CurveGenerator* profile;
+CurveGenerator* trajectory;
 
 
 int main()
@@ -31,6 +36,7 @@ int main()
 	}
 	glfwMakeContextCurrent(window);
 	glfwSetMouseButtonCallback(window, mouse_button_callback);
+	glfwSetKeyCallback(window, key_callback);
 
 	glewExperimental = GL_TRUE;
 	if (glewInit() != GLEW_OK)
@@ -41,7 +47,6 @@ int main()
 
 	int width, height;
 
-
 	glfwGetFramebufferSize(window, &width, &height);
 	glViewport(0, 0, width, height);
 
@@ -50,8 +55,6 @@ int main()
 	glPointSize(6);
 	glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
 
-	Renderer& renderer = Renderer::getInstance();
-
 
 	while (!glfwWindowShouldClose(window))
 	 {
@@ -59,7 +62,7 @@ int main()
 		glfwPollEvents();
 
 		/* Render here */
-		renderer.Render();
+		Renderer::getInstance()->Render();
 
 		/* Swap front and back buffers */
 		glfwSwapBuffers(window);
@@ -82,7 +85,7 @@ void mouse_button_callback(GLFWwindow* window, int button, int action, int mods)
 			double xPos, yPos;
 			glfwGetCursorPos(window, &xPos, &yPos);
 			std::cout << "Adding point to curve 1 - x: " << xPos << ", y: " << yPos << std::endl;
-			Renderer::getInstance().AddPoint(screenToModel(glm::vec2(xPos, yPos)));
+			Renderer::getInstance()->AddPoint(glm::vec3(screenToModel(glm::vec2(xPos, yPos)),0));
 		}
 		else if (action == GLFW_RELEASE)
 		{
@@ -99,7 +102,7 @@ void mouse_button_callback(GLFWwindow* window, int button, int action, int mods)
 
 		if (action == GLFW_PRESS)
 		{
-			Renderer::getInstance().outputClicks();
+			Renderer::getInstance()->outputClicks();
 	//		mouse[1] = true;
 	//		/*std::cout << "Clicks 1:" << std::endl;
 	//		for (auto const& click : mouseClicks1)
@@ -132,3 +135,28 @@ glm::vec2 screenToModel(const glm::vec2 point)
 	std::cout << "X':" << std::endl << x << " , Y':" << y << std::endl;
 	return glm::vec2(x, y);
 }
+
+void key_callback(GLFWwindow* window, int key, int scancode, int action, int mode)
+{
+	if (action == GLFW_PRESS) {
+		switch (key) {
+		case GLFW_KEY_ENTER:
+			if (Renderer::getInstance()->getPoints().size() >= 4)
+			{
+				profile = new CurveGenerator();
+				profile->generateCurve(Renderer::getInstance()->getPoints());
+				Renderer::getInstance()->NewPoints(profile->getCurve());
+			}
+			else
+			{
+				std::cerr << "Not enough points to compute Catmull Rom splines: At least 4 points are required" << std::endl;
+			}
+
+
+
+		default:
+			break;
+		}
+	}
+}
+

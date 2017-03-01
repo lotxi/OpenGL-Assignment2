@@ -1,17 +1,18 @@
 #include "Renderer.h"
+Renderer *Renderer::instance = 0;
 
 Renderer::Renderer()
 {
 	std::cout << "Initializing Renderer" << std::endl;
 	
 	shader = new Shader("shader.vs", "shader.frag");
-	clicks.push_back(glm::vec3(0.75, 0.75, 0));
+	std::cout << "Shader initialized" << std::endl;
 
 	glGenVertexArrays(1, &m_vao);
 	glGenBuffers(1, &m_vbo);
 	glBindVertexArray(m_vao);;
 	glBindBuffer(GL_ARRAY_BUFFER, m_vbo);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(glm::vec3) * clicks.size(), clicks.data(), GL_STATIC_DRAW);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(glm::vec3) * points.size(), points.data(), GL_STATIC_DRAW);
 	
 	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(GLfloat), (GLvoid*)0);
 	glEnableVertexAttribArray(0);
@@ -20,11 +21,15 @@ Renderer::Renderer()
 	glBindVertexArray(0); // Unbind VAO
 }
 
-Renderer& Renderer::getInstance()
+Renderer* Renderer::getInstance()
 {
-	static Renderer instance;
+	if (!instance)
+	{
+		instance = new Renderer;
+	}
 	return instance;
 }
+
 
 void Renderer::Render()
 {
@@ -35,27 +40,41 @@ void Renderer::Render()
 
 	// Draw container
 	glBindVertexArray(m_vao);
-	glDrawArrays(GL_POINTS, 0, clicks.size());
+	glDrawArrays(GL_POINTS, 0, points.size());
 	glBindVertexArray(0);
 }
 
-void Renderer::AddPoint(const glm::vec2& point)
+void Renderer::AddPoint(glm::vec3 point)
 {
-	clicks.push_back(glm::vec3(point, 0));
-	glBindVertexArray(m_vao);
+	points.push_back(point);
 	glBindBuffer(GL_ARRAY_BUFFER, m_vbo);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(glm::vec3) * clicks.size(), clicks.data(), GL_STATIC_DRAW);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(glm::vec3) * points.size(), points.data(), GL_STATIC_DRAW);
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
-	std::cout << "Point added to VBO" << std::endl;
-	glBindVertexArray(0);
 }
 
 void Renderer::outputClicks()
 {
-	for (const auto click: clicks)
+	for (const auto click: points)
 	{
 		std::cout << click.x << " " << click.y << " " << click.z << std::endl;
 	}
+}
+
+void Renderer::NewPoints(std::vector<glm::vec3>* newPoints)
+{
+	points.clear();
+	for (auto i = 0; i < newPoints->size(); i++)
+	{
+		points.push_back(newPoints->at(i));
+	}
+	glBindBuffer(GL_ARRAY_BUFFER, m_vbo);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(glm::vec3) * points.size(), points.data(), GL_STATIC_DRAW);
+	glBindBuffer(GL_ARRAY_BUFFER, 0);
+}
+
+std::vector<glm::vec3> Renderer::getPoints()
+{
+	return points;
 }
 
 
