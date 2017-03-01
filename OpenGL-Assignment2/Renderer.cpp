@@ -19,6 +19,7 @@ Renderer::Renderer()
 
 	glBindBuffer(GL_ARRAY_BUFFER, 0); // Unbind VBO
 	glBindVertexArray(0); // Unbind VAO
+	renderMode = POINT;
 }
 
 Renderer* Renderer::getInstance()
@@ -40,7 +41,7 @@ void Renderer::Render()
 
 	// Draw container
 	glBindVertexArray(m_vao);
-	glDrawArrays(GL_POINTS, 0, points.size());
+	glDrawArrays(renderMode==POINT?GL_POINTS:GL_LINE_STRIP, 0, points.size());
 	glBindVertexArray(0);
 }
 
@@ -52,17 +53,10 @@ void Renderer::AddPoint(glm::vec3 point)
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 }
 
-void Renderer::outputClicks()
-{
-	for (const auto click: points)
-	{
-		std::cout << click.x << " " << click.y << " " << click.z << std::endl;
-	}
-}
-
 void Renderer::NewPoints(std::vector<glm::vec3>* newPoints)
 {
-	points.clear();
+	ClearPoints();
+	std::cout << "Points cleared" << std::endl;
 	for (auto i = 0; i < newPoints->size(); i++)
 	{
 		points.push_back(newPoints->at(i));
@@ -72,9 +66,27 @@ void Renderer::NewPoints(std::vector<glm::vec3>* newPoints)
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 }
 
+void Renderer::ClearPoints()
+{
+	points.clear();
+}
+
 std::vector<glm::vec3> Renderer::getPoints()
 {
 	return points;
+}
+
+void Renderer::SetRenderMode(RenderMode mode)
+{
+	if (mode==POINT)
+	{
+		renderMode = POINT;
+	}
+	else if (mode == LINE)
+	{
+		renderMode = LINE;
+	}
+	
 }
 
 

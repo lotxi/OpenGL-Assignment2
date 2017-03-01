@@ -29,12 +29,6 @@ void CurveGenerator::generateCurve(std::vector<glm::vec3>& points)
 
 		// Add the final point to the results
 		curve->push_back(points.at(points.size() - 2));
-
-		std::cout << "Outputting curve" << std::endl;
-		for (auto const& point : results)
-		{
-			std::cout << "X:" << point.x << ", Y:" << point.y << ", Z:" << point.z << std::endl;
-		}
 }
 
 std::vector<glm::vec3>* CurveGenerator::getCurve()
@@ -64,8 +58,6 @@ void CurveGenerator::subDivide(const float u0, const float u1, const float maxLe
 		curve->push_back(x0);
 		curve->push_back(x1);
 	}
-	
-
 }
 
 
