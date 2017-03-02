@@ -139,7 +139,7 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
 					if (currentSweep == ROTATIONAL)
 					{
 						FileManager::writeRotationalSweep(profile->getCurve());
-						std::cout << "Translational sweep written to file" << std::endl;
+						std::cout << "Rotational sweep written to file" << std::endl;
 					}
 				}
 				else if (currentState == INPUT_TRAJECTORY)

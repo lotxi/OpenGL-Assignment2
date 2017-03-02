@@ -6,6 +6,7 @@
 #include "../glm/glm.hpp"
 #include "Shader.h"
 #include <vector>
+#include <iostream>
 
 #define WIDTH_DEFAULT 800
 #define HEIGHT_DEFAULT 800
