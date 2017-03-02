@@ -14,26 +14,26 @@ glm::vec2 screenToModel(glm::vec2 point);
 
 enum state { INPUT_PROFILE, INPUT_TRAJECTORY, REVIEW_CURVES, RENDER };
 enum sweepType { TRANSLATIONAL, ROTATIONAL };
-enum view {PROFILE, TRAJECTORY, SHAPE};
+enum view { PROFILE, TRAJECTORY, SHAPE };
 state currentState = INPUT_PROFILE;
 sweepType currentSweep;
 view currentView = PROFILE;
 
 bool keys[1024];
 bool mouse[2];
-CurveGenerator* profile=0;
-CurveGenerator* trajectory=0;
+CurveGenerator* profile = 0;
+CurveGenerator* trajectory = 0;
 int WIDTH = WIDTH_DEFAULT;
 int HEIGHT = HEIGHT_DEFAULT;
 
 
 int main()
 {
-	
-	
+
+
 	currentState = INPUT_PROFILE;
 	selectSweep();
-	
+
 	// Initialize OpenGL Window
 	std::cout << "Starting GLFW context, OpenGL 3.3" << std::endl;
 	glfwInit();
@@ -73,7 +73,7 @@ int main()
 
 
 	while (!glfwWindowShouldClose(window))
-	 {
+	{
 		/* Poll for and process events */
 		glfwPollEvents();
 
@@ -83,7 +83,7 @@ int main()
 		/* Swap front and back buffers */
 		glfwSwapInterval(1);
 		glfwSwapBuffers(window);
-	 }
+	}
 
 	// Terminate GLFW, clearing any resources allocated by GLFW.
 	glfwTerminate();
@@ -99,11 +99,11 @@ void mouse_button_callback(GLFWwindow* window, int button, int action, int mods)
 		if (action == GLFW_PRESS)
 		{
 			mouse[0] = true;
-			if (currentState == INPUT_TRAJECTORY || currentState==INPUT_PROFILE)
+			if (currentState == INPUT_TRAJECTORY || currentState == INPUT_PROFILE)
 			{
 				double xPos, yPos;
 				glfwGetCursorPos(window, &xPos, &yPos);
-				Renderer::getInstance()->AddPoint(glm::vec3(screenToModel(glm::vec2(xPos, yPos)),0));
+				Renderer::getInstance()->AddPoint(glm::vec3(screenToModel(glm::vec2(xPos, yPos)), 0));
 			}
 		}
 		else if (action == GLFW_RELEASE)
@@ -130,19 +130,19 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
 		case GLFW_KEY_ENTER:
 			if (Renderer::getInstance()->getPoints().size() >= 4)
 			{
-				if (currentState==INPUT_PROFILE)
+				if (currentState == INPUT_PROFILE)
 				{
 					profile = new CurveGenerator();
 					profile->generateCurve(Renderer::getInstance()->getPoints());
 					Renderer::getInstance()->NewPoints(profile->getCurve());
 					currentState = REVIEW_CURVES;
-					if (currentSweep==ROTATIONAL)
+					if (currentSweep == ROTATIONAL)
 					{
 						FileManager::writeRotationalSweep(profile->getCurve());
 						std::cout << "Translational sweep written to file" << std::endl;
 					}
 				}
-				else if (currentState==INPUT_TRAJECTORY)
+				else if (currentState == INPUT_TRAJECTORY)
 				{
 					trajectory = new CurveGenerator();
 					trajectory->generateCurve(Renderer::getInstance()->getPoints());
@@ -151,13 +151,13 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
 					currentState = REVIEW_CURVES;
 					// Write translational sweep to file
 					std::cout << "Translational sweep written to file" << std::endl;
-					FileManager::writeTranslationalSweep(profile->getCurve(),trajectory->getCurve());
-					
+					FileManager::writeTranslationalSweep(profile->getCurve(), trajectory->getCurve());
+
 
 				}
-				else if (currentState==REVIEW_CURVES)
+				else if (currentState == REVIEW_CURVES)
 				{
-					if (currentSweep==TRANSLATIONAL)
+					if (currentSweep == TRANSLATIONAL)
 					{
 						if (!trajectory)
 						{
@@ -175,10 +175,10 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
 					{
 						// Display shape
 					}
-					
+
 				}
-				
-				
+
+
 			}
 			else
 			{
@@ -188,7 +188,7 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
 
 
 		case GLFW_KEY_LEFT:
-			if (currentState==REVIEW_CURVES)
+			if (currentState == REVIEW_CURVES)
 			{
 				if (trajectory) // If both curves have been defined, allow switching between views
 				{
@@ -206,12 +206,12 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
 			}
 			break;
 		case GLFW_KEY_L:
-			if (currentState==REVIEW_CURVES)
-			Renderer::getInstance()->SetRenderMode(Renderer::RenderMode::LINE);
+			if (currentState == REVIEW_CURVES)
+				Renderer::getInstance()->SetRenderMode(Renderer::RenderMode::LINE);
 			break;
 		case GLFW_KEY_P:
 			if (currentState == REVIEW_CURVES)
-			Renderer::getInstance()->SetRenderMode(Renderer::RenderMode::POINT);
+				Renderer::getInstance()->SetRenderMode(Renderer::RenderMode::POINT);
 			break;
 		case GLFW_KEY_BACKSPACE:
 			currentState == INPUT_PROFILE;
@@ -231,12 +231,12 @@ void framebuffer_size_callback(GLFWwindow* window, int width, int height)
 
 void changeView()
 {
-	if (currentView==PROFILE)
+	if (currentView == PROFILE)
 	{
 		Renderer::getInstance()->NewPoints(trajectory->getCurve());
 		currentView = TRAJECTORY;
 	}
-	else if (currentView==TRAJECTORY)
+	else if (currentView == TRAJECTORY)
 	{
 		Renderer::getInstance()->NewPoints(profile->getCurve());
 		currentView = PROFILE;

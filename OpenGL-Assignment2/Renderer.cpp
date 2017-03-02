@@ -6,7 +6,7 @@ Renderer *Renderer::instance = 0;
 Renderer::Renderer()
 {
 	std::cout << "Initializing Renderer" << std::endl;
-	
+
 	shader = new Shader("shader.vs", "shader.frag");
 	std::cout << "Shader initialized" << std::endl;
 
@@ -15,7 +15,7 @@ Renderer::Renderer()
 	glBindVertexArray(m_vao);;
 	glBindBuffer(GL_ARRAY_BUFFER, m_vbo);
 	glBufferData(GL_ARRAY_BUFFER, sizeof(glm::vec3) * points.size(), points.data(), GL_STATIC_DRAW);
-	
+
 	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(GLfloat), (GLvoid*)0);
 	glEnableVertexAttribArray(0);
 
@@ -42,10 +42,10 @@ void Renderer::Render()
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	// Activate shader
 	shader->Use();
-	
+
 	// Draw container
 	glBindVertexArray(m_vao);
-	glDrawArrays(renderMode==POINT?GL_POINTS:GL_LINE_STRIP, 0, points.size());
+	glDrawArrays(renderMode == POINT ? GL_POINTS : GL_LINE_STRIP, 0, points.size());
 	glBindVertexArray(0);
 }
 
@@ -83,7 +83,7 @@ std::vector<glm::vec3> Renderer::getPoints()
 
 void Renderer::SetRenderMode(RenderMode mode)
 {
-	if (mode==POINT)
+	if (mode == POINT)
 	{
 		renderMode = POINT;
 	}
@@ -91,7 +91,7 @@ void Renderer::SetRenderMode(RenderMode mode)
 	{
 		renderMode = LINE;
 	}
-	
+
 }
 
 

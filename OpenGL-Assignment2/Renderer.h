@@ -12,8 +12,8 @@
 
 class Renderer
 {
-public: 
-	enum RenderMode{POINT, LINE};
+public:
+	enum RenderMode { POINT, LINE };
 	static Renderer* getInstance();
 
 	/**
@@ -46,7 +46,7 @@ public:
 	 */
 	void SetRenderMode(RenderMode mode);
 
-private: 
+private:
 
 	/**
 	 * \brief Private constructor to ensure single instance

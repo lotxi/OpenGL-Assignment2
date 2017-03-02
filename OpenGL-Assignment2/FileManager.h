@@ -15,8 +15,8 @@ class FileManager
 public:
 	static void writeRotationalSweep(std::vector<glm::vec3>* positionCurve);
 	static void writeTranslationalSweep(std::vector<glm::vec3>* profileCurve, std::vector<glm::vec3>* trajectoryCurve);
-	
-	private: 
+
+private:
 	FileManager();;
 	~FileManager();
 };

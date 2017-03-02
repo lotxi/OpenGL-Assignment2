@@ -7,25 +7,25 @@ CurveGenerator::CurveGenerator() {
 
 void CurveGenerator::generateCurve(std::vector<glm::vec3>& points)
 {
-	
+
 	glm::mat4x3 control;
 	std::vector<glm::vec3> results;
 	float maxLength = 0.1;
 
 	// For each set of 4 consecutive points, create a catmull rom spline
-	for (int i = 0; i<points.size() - 3; i++)
+	for (int i = 0; i < points.size() - 3; i++)
 	{
 		// Populate the control matrix
 		control = glm::mat4x3(points.at(i).x, points.at(i).y, points.at(i).z,
-		points.at(i + 1).x, points.at(i + 1).y, points.at(i + 1).z,
-		points.at(i + 2).x, points.at(i + 2).y, points.at(i + 2).z,
-		points.at(i + 3).x, points.at(i + 3).y, points.at(i + 3).z);
+			points.at(i + 1).x, points.at(i + 1).y, points.at(i + 1).z,
+			points.at(i + 2).x, points.at(i + 2).y, points.at(i + 2).z,
+			points.at(i + 3).x, points.at(i + 3).y, points.at(i + 3).z);
 		// Add the initial point (i+1) to the results
 		curve->push_back(points.at(i + 1));
 		subDivide(0.0, 1.0, maxLength, control);
 	}
-		// Add the final point to the results
-		curve->push_back(points.at(points.size() - 2));
+	// Add the final point to the results
+	curve->push_back(points.at(points.size() - 2));
 }
 
 std::vector<glm::vec3>* CurveGenerator::getCurve()
@@ -41,7 +41,7 @@ void CurveGenerator::subDivide(const float u0, const float u1, const float maxLe
 	x0 = catmullRom(control, u0);
 	x1 = catmullRom(control, u1);
 
-	if (glm::distance(x1, x0) > maxLength) 
+	if (glm::distance(x1, x0) > maxLength)
 	{
 		subDivide(u0, uMid, maxLength, control);
 		subDivide(uMid, u1, maxLength, control);
