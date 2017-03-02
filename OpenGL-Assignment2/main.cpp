@@ -1,7 +1,7 @@
 #include "Renderer.h"
 #include "CurveGenerator.h"
 #include "../glm/glm.hpp"
-#include "InputReader.h"
+#include "FileManager.h"
 
 void mouse_button_callback(GLFWwindow* window, int button, int action, int mods);
 void key_callback(GLFWwindow* window, int key, int scancode, int action, int mode);

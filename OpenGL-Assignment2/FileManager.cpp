@@ -1,4 +1,4 @@
-#include "InputReader.h"
+#include "FileManager.h"
 
 FileManager::FileManager()
 {}
