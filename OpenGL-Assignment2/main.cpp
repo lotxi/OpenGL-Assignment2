@@ -23,6 +23,8 @@ bool keys[1024];
 bool mouse[2];
 CurveGenerator* profile=0;
 CurveGenerator* trajectory=0;
+int WIDTH = WIDTH_DEFAULT;
+int HEIGHT = HEIGHT_DEFAULT;
 
 
 int main()
@@ -142,7 +144,7 @@ void mouse_button_callback(GLFWwindow* window, int button, int action, int mods)
 
 glm::vec2 screenToModel(const glm::vec2 point)
 {
-	int src_min_x = 0, src_max_x = 800, src_min_y = 800, src_max_y = 0, res_min = -1, res_max = 1;
+	int src_min_x = 0, src_max_x = WIDTH, src_min_y = HEIGHT, src_max_y = 0, res_min = -1, res_max = 1;
 	GLfloat x, y;
 	std::cout << "X:" << point.x << " , Y:" << point.y << std::endl;
 	x = (point.x - src_min_x) / (src_max_x - src_min_x) * (res_max - res_min) + res_min;
@@ -254,7 +256,9 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
 
 void framebuffer_size_callback(GLFWwindow* window, int width, int height)
 {
-	glViewport(0, 0, width, height);
+	WIDTH = width;
+	HEIGHT = height;
+	glViewport(0, 0, WIDTH, HEIGHT);
 }
 
 void changeView()
