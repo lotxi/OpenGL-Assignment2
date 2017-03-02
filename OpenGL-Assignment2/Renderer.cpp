@@ -60,7 +60,6 @@ void Renderer::AddPoint(glm::vec3 point)
 void Renderer::NewPoints(std::vector<glm::vec3>* newPoints)
 {
 	ClearPoints();
-	std::cout << "Points cleared" << std::endl;
 	for (auto i = 0; i < newPoints->size(); i++)
 	{
 		points.push_back(newPoints->at(i));
@@ -72,6 +71,7 @@ void Renderer::NewPoints(std::vector<glm::vec3>* newPoints)
 
 void Renderer::ClearPoints()
 {
+	std::cout << "Points cleared" << std::endl;
 	points.clear();
 	Renderer::getInstance()->SetRenderMode(POINT);
 }

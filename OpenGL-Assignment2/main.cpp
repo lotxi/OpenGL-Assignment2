@@ -52,6 +52,7 @@ int main()
 	glfwMakeContextCurrent(window);
 	glfwSetMouseButtonCallback(window, mouse_button_callback);
 	glfwSetKeyCallback(window, key_callback);
+	glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
 
 	glewExperimental = GL_TRUE;
 	if (glewInit() != GLEW_OK)
@@ -111,45 +112,14 @@ void mouse_button_callback(GLFWwindow* window, int button, int action, int mods)
 		}
 
 	}
-
-	if (button == GLFW_MOUSE_BUTTON_2)
-	{
-		
-
-
-
-		if (action == GLFW_PRESS)
-		{
-	//		mouse[1] = true;
-	//		/*std::cout << "Clicks 1:" << std::endl;
-	//		for (auto const& click : mouseClicks1)
-	//		{
-	//			std::cout << "X: " << click.x << "Y: " << click.y << std::endl;
-	//		}
-	//		std::cout << "Clicks 2:" << std::endl;
-	//		for (auto const& click : mouseClicks2)
-	//		{
-	//			std::cout << "X: " << click.x << "Y: " << click.y << std::endl;
-	//		}*/
-
-		}
-	//	else if (action == GLFW_RELEASE)
-	//	{
-	//		mouse[1] = false;
-	//	}
-
-	}
-
 }
 
 glm::vec2 screenToModel(const glm::vec2 point)
 {
 	int src_min_x = 0, src_max_x = WIDTH, src_min_y = HEIGHT, src_max_y = 0, res_min = -1, res_max = 1;
 	GLfloat x, y;
-	std::cout << "X:" << point.x << " , Y:" << point.y << std::endl;
 	x = (point.x - src_min_x) / (src_max_x - src_min_x) * (res_max - res_min) + res_min;
 	y = (point.y - src_min_y) / (src_max_y - src_min_y) * (res_max - res_min) + res_min;
-	std::cout << "X':" << std::endl << x << " , Y':" << y << std::endl;
 	return glm::vec2(x, y);
 }
 
@@ -218,7 +188,6 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
 
 
 		case GLFW_KEY_LEFT:
-			std::cout << "Left key pressed" << std::endl;
 			if (currentState==REVIEW_CURVES)
 			{
 				if (trajectory) // If both curves have been defined, allow switching between views
@@ -228,7 +197,6 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
 			}
 			break;
 		case GLFW_KEY_RIGHT:
-			std::cout << "Right key pressed" << std::endl;
 			if (currentState == REVIEW_CURVES)
 			{
 				if (trajectory) // If both curves have been defined, allow switching between views
@@ -290,7 +258,6 @@ void reset()
 	Renderer::getInstance()->ClearPoints();
 	currentState = INPUT_PROFILE;
 	currentView = PROFILE;
-	selectSweep();
 }
 
 void selectSweep()

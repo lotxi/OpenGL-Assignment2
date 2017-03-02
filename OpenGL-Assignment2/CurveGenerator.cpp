@@ -41,8 +41,6 @@ void CurveGenerator::subDivide(const float u0, const float u1, const float maxLe
 	x0 = catmullRom(control, u0);
 	x1 = catmullRom(control, u1);
 
-	std::cout << (glm::distance(x1, x0) > maxLength) << std::endl;
-
 	if (glm::distance(x1, x0) > maxLength) 
 	{
 		subDivide(u0, uMid, maxLength, control);
