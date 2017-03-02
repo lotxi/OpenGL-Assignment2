@@ -1,6 +1,5 @@
 #include "CurveGenerator.h"
 #include <iostream>
-#include <cmath>
 
 CurveGenerator::CurveGenerator() {
 	curve = new std::vector<glm::vec3>;

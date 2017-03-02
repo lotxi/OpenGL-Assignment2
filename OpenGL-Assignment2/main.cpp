@@ -20,8 +20,6 @@ bool keys[1024];
 bool mouse[2];
 CurveGenerator* profile=0;
 CurveGenerator* trajectory=0;
-InputReader input;
-
 
 
 int main()
@@ -183,7 +181,7 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
 					currentState = REVIEW_CURVES;
 					if (currentSweep==ROTATIONAL)
 					{
-						input.writeRotationalSweep(profile->getCurve());
+						FileManager::writeRotationalSweep(profile->getCurve());
 						std::cout << "Translational sweep written to file" << std::endl;
 					}
 				}
@@ -196,7 +194,7 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
 					currentState = REVIEW_CURVES;
 					// Write translational sweep to file
 					std::cout << "Translational sweep written to file" << std::endl;
-					input.writeTranslationalSweep(profile->getCurve(),trajectory->getCurve());
+					FileManager::writeTranslationalSweep(profile->getCurve(),trajectory->getCurve());
 					
 
 				}
