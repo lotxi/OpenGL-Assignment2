@@ -22,10 +22,8 @@ void CurveGenerator::generateCurve(std::vector<glm::vec3>& points)
 		points.at(i + 3).x, points.at(i + 3).y, points.at(i + 3).z);
 		// Add the initial point (i+1) to the results
 		curve->push_back(points.at(i + 1));
-		std::cout << "Subdividing 0.0, 1.0" << std::endl;
 		subDivide(0.0, 1.0, maxLength, control);
 	}
-
 		// Add the final point to the results
 		curve->push_back(points.at(points.size() - 2));
 }
@@ -41,16 +39,13 @@ void CurveGenerator::subDivide(const float u0, const float u1, const float maxLe
 	float uMid = (u0 + u1) / 2;
 	glm::vec3 x0, x1;
 	x0 = catmullRom(control, u0);
-	std::cout << "X0=" << x0.x << " " << x0.y << " " << x0.z << std::endl;
 	x1 = catmullRom(control, u1);
-	std::cout << "X1=" << x1.x << " " << x1.y << " " << x1.z << std::endl;
-	std::cout << "DISTANCE: "<< glm::distance(x1, x0) << std::endl;
+
 	std::cout << (glm::distance(x1, x0) > maxLength) << std::endl;
+
 	if (glm::distance(x1, x0) > maxLength) 
 	{
-		std::cout << "Subdividing..." << u0 << " " << uMid << std::endl;
 		subDivide(u0, uMid, maxLength, control);
-		std::cout << "Subdividing..." << uMid << " " << u1 << std::endl;
 		subDivide(uMid, u1, maxLength, control);
 	}
 	else {
@@ -58,7 +53,6 @@ void CurveGenerator::subDivide(const float u0, const float u1, const float maxLe
 		curve->push_back(x1);
 	}
 }
-
 
 glm::vec3 CurveGenerator::catmullRom(const glm::mat4x3 & control, float u)
 {

@@ -29,5 +29,6 @@ private:
 	GLuint m_vao, m_vbo;
 	static Renderer* instance;
 	RenderMode renderMode;
+	int WIDTH, HEIGHT;
 };
 

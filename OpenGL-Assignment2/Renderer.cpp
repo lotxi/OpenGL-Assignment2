@@ -1,4 +1,6 @@
 #include "Renderer.h"
+#include "../glm/gtc/matrix_transform.inl"
+#include "../glm/gtc/type_ptr.hpp"
 Renderer *Renderer::instance = 0;
 
 Renderer::Renderer()
@@ -20,6 +22,8 @@ Renderer::Renderer()
 	glBindBuffer(GL_ARRAY_BUFFER, 0); // Unbind VBO
 	glBindVertexArray(0); // Unbind VAO
 	renderMode = POINT;
+	WIDTH = WIDTH_DEFAULT;
+	HEIGHT = HEIGHT_DEFAULT;
 }
 
 Renderer* Renderer::getInstance()
@@ -38,7 +42,7 @@ void Renderer::Render()
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	// Activate shader
 	shader->Use();
-
+	
 	// Draw container
 	glBindVertexArray(m_vao);
 	glDrawArrays(renderMode==POINT?GL_POINTS:GL_LINE_STRIP, 0, points.size());
@@ -69,6 +73,7 @@ void Renderer::NewPoints(std::vector<glm::vec3>* newPoints)
 void Renderer::ClearPoints()
 {
 	points.clear();
+	Renderer::getInstance()->SetRenderMode(POINT);
 }
 
 std::vector<glm::vec3> Renderer::getPoints()

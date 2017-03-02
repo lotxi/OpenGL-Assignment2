@@ -5,7 +5,11 @@
 
 void mouse_button_callback(GLFWwindow* window, int button, int action, int mods);
 void key_callback(GLFWwindow* window, int key, int scancode, int action, int mode);
+void framebuffer_size_callback(GLFWwindow* window, int width, int height);
 void changeView();
+void reset();
+void selectSweep();
+
 glm::vec2 screenToModel(glm::vec2 point);
 
 enum state { INPUT_PROFILE, INPUT_TRAJECTORY, REVIEW_CURVES, RENDER };
@@ -15,7 +19,6 @@ state currentState = INPUT_PROFILE;
 sweepType currentSweep;
 view currentView = PROFILE;
 
-bool curveStatus[] = { false, false };
 bool keys[1024];
 bool mouse[2];
 CurveGenerator* profile=0;
@@ -25,27 +28,9 @@ CurveGenerator* trajectory=0;
 int main()
 {
 	
-	std::string response;
+	
 	currentState = INPUT_PROFILE;
-	while (true) {
-		std::cout << "Please select a sweep type > [t]ranslational or [r]otational > ";
-		std::cin >> response;
-
-		if (response == "T" || response == "t")
-		{
-			std::cout << "Translational Sweep Selected" << std::endl;
-			currentSweep = TRANSLATIONAL;
-			break;
-		}
-		if (response == "R" || response == "r")
-		{
-			std::cout << "Rotational Sweep Selected: Click ponts for curve then press enter" << std::endl;
-			currentSweep = ROTATIONAL;
-			break;
-		}
-
-		std::cout << "Please enter T or R" << std::endl;
-	}
+	selectSweep();
 	
 	// Initialize OpenGL Window
 	std::cout << "Starting GLFW context, OpenGL 3.3" << std::endl;
@@ -93,6 +78,7 @@ int main()
 		Renderer::getInstance()->Render();
 
 		/* Swap front and back buffers */
+		glfwSwapInterval(1);
 		glfwSwapBuffers(window);
 	 }
 
@@ -114,7 +100,6 @@ void mouse_button_callback(GLFWwindow* window, int button, int action, int mods)
 			{
 				double xPos, yPos;
 				glfwGetCursorPos(window, &xPos, &yPos);
-				std::cout << "Adding point to curve 1 - x: " << xPos << ", y: " << yPos << std::endl;
 				Renderer::getInstance()->AddPoint(glm::vec3(screenToModel(glm::vec2(xPos, yPos)),0));
 			}
 		}
@@ -258,10 +243,18 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
 			if (currentState == REVIEW_CURVES)
 			Renderer::getInstance()->SetRenderMode(Renderer::RenderMode::POINT);
 			break;
+		case GLFW_KEY_BACKSPACE:
+			currentState == INPUT_PROFILE;
+			reset();
 		default:
 			break;
 		}
 	}
+}
+
+void framebuffer_size_callback(GLFWwindow* window, int width, int height)
+{
+	glViewport(0, 0, width, height);
 }
 
 void changeView()
@@ -275,6 +268,48 @@ void changeView()
 	{
 		Renderer::getInstance()->NewPoints(profile->getCurve());
 		currentView = PROFILE;
+	}
+}
+
+void reset()
+{
+	if (profile)
+	{
+		delete profile;
+		profile = nullptr;
+	}
+	if (trajectory)
+	{
+		delete trajectory;
+		trajectory = nullptr;
+	}
+	Renderer::getInstance()->ClearPoints();
+	currentState = INPUT_PROFILE;
+	currentView = PROFILE;
+	selectSweep();
+}
+
+void selectSweep()
+{
+	std::string response;
+	while (true) {
+		std::cout << "Please select a sweep type > [t]ranslational or [r]otational > ";
+		std::cin >> response;
+
+		if (response == "T" || response == "t")
+		{
+			std::cout << "Translational Sweep Selected" << std::endl;
+			currentSweep = TRANSLATIONAL;
+			break;
+		}
+		if (response == "R" || response == "r")
+		{
+			std::cout << "Rotational Sweep Selected: Click ponts for curve then press enter" << std::endl;
+			currentSweep = ROTATIONAL;
+			break;
+		}
+
+		std::cout << "Please enter T or R" << std::endl;
 	}
 }
 

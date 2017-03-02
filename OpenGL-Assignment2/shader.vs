@@ -5,10 +5,6 @@ layout (location = 0) in vec3 position;
 out vec3 ourColor;
 
 
-//uniform mat4 model;
-//uniform mat4 view;
-//uniform mat4 projection;
-
 
 void main()
 {
