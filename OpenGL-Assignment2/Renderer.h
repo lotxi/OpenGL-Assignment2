@@ -1,8 +1,8 @@
 #pragma once
 #include "iostream"
 #define GLEW_STATIC
-#include "glew/glew.h"	// include GL Extension Wrangler
-#include "glfw/glfw3.h"	// include GLFW helper library
+#include "../glew/glew.h"	// include GL Extension Wrangler
+#include "../glfw/glfw3.h"	// include GLFW helper library
 #include "../glm/glm.hpp"
 #include "Shader.h"
 #include <vector>
@@ -15,6 +15,8 @@ class Renderer
 {
 public:
 	enum RenderMode { POINT, LINE };
+
+
 	static Renderer* getInstance();
 
 	/**
@@ -75,6 +77,7 @@ private:
 	 * \brief The currently active render mode (points or lines)
 	 */
 	RenderMode renderMode;
+
 	int WIDTH, HEIGHT;
 };
 

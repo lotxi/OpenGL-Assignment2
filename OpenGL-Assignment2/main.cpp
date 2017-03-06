@@ -21,8 +21,8 @@ view currentView = PROFILE;
 
 bool keys[1024];
 bool mouse[2];
-CurveGenerator* profile = 0;
-CurveGenerator* trajectory = 0;
+CurveGenerator* profile = new CurveGenerator();
+CurveGenerator* trajectory = new CurveGenerator();
 int WIDTH = WIDTH_DEFAULT;
 int HEIGHT = HEIGHT_DEFAULT;
 
@@ -114,6 +114,9 @@ void mouse_button_callback(GLFWwindow* window, int button, int action, int mods)
 	}
 }
 
+/**
+	Convert screen coordinates to model coordinates in the range (-1, 1)
+*/
 glm::vec2 screenToModel(const glm::vec2 point)
 {
 	int src_min_x = 0, src_max_x = WIDTH, src_min_y = HEIGHT, src_max_y = 0, res_min = -1, res_max = 1;
@@ -132,7 +135,6 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
 			{
 				if (currentState == INPUT_PROFILE)
 				{
-					profile = new CurveGenerator();
 					profile->generateCurve(Renderer::getInstance()->getPoints());
 					Renderer::getInstance()->NewPoints(profile->getCurve());
 					currentState = REVIEW_CURVES;
@@ -144,7 +146,6 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
 				}
 				else if (currentState == INPUT_TRAJECTORY)
 				{
-					trajectory = new CurveGenerator();
 					trajectory->generateCurve(Renderer::getInstance()->getPoints());
 					std::cout << "Rendering trajectory curve" << std::endl;
 					Renderer::getInstance()->NewPoints(trajectory->getCurve());
@@ -159,10 +160,11 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
 				{
 					if (currentSweep == TRANSLATIONAL)
 					{
-						if (!trajectory)
+						if (!trajectory->isReady())
 						{
 							std::cout << "Choose points for trajectory curve" << std::endl;
 							currentState = INPUT_TRAJECTORY;
+							currentView = TRAJECTORY;
 							Renderer::getInstance()->ClearPoints();
 							Renderer::getInstance()->SetRenderMode(Renderer::RenderMode::POINT);
 						}
@@ -190,7 +192,7 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
 		case GLFW_KEY_LEFT:
 			if (currentState == REVIEW_CURVES)
 			{
-				if (trajectory) // If both curves have been defined, allow switching between views
+				if (trajectory->isReady()) // If both curves have been defined, allow switching between views
 				{
 					changeView();
 				}
@@ -199,7 +201,7 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
 		case GLFW_KEY_RIGHT:
 			if (currentState == REVIEW_CURVES)
 			{
-				if (trajectory) // If both curves have been defined, allow switching between views
+				if (trajectory->isReady()) // If both curves have been defined, allow switching between views
 				{
 					changeView();
 				}
@@ -214,8 +216,18 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
 				Renderer::getInstance()->SetRenderMode(Renderer::RenderMode::POINT);
 			break;
 		case GLFW_KEY_BACKSPACE:
-			currentState == INPUT_PROFILE;
+			currentState = INPUT_PROFILE;
 			reset();
+			break;
+		case GLFW_KEY_TAB:
+			profile->setSubdivisionType(CurveGenerator::SubdivisionType::DISTANCE);
+			trajectory->setSubdivisionType(CurveGenerator::SubdivisionType::DISTANCE);
+			break;
+		case GLFW_KEY_CAPS_LOCK:
+			profile->setSubdivisionType(CurveGenerator::SubdivisionType::CURVATURE);
+			trajectory->setSubdivisionType(CurveGenerator::SubdivisionType::CURVATURE);
+			
+			break;
 		default:
 			break;
 		}
@@ -245,16 +257,8 @@ void changeView()
 
 void reset()
 {
-	if (profile)
-	{
-		delete profile;
-		profile = nullptr;
-	}
-	if (trajectory)
-	{
-		delete trajectory;
-		trajectory = nullptr;
-	}
+	profile->Clear();
+	trajectory->Clear();
 	Renderer::getInstance()->ClearPoints();
 	currentState = INPUT_PROFILE;
 	currentView = PROFILE;

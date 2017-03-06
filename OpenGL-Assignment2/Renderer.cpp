@@ -6,7 +6,7 @@ Renderer *Renderer::instance = 0;
 Renderer::Renderer()
 {
 	std::cout << "Initializing Renderer" << std::endl;
-
+	
 	shader = new Shader("shader.vs", "shader.frag");
 	std::cout << "Shader initialized" << std::endl;
 
@@ -71,7 +71,6 @@ void Renderer::NewPoints(std::vector<glm::vec3>* newPoints)
 
 void Renderer::ClearPoints()
 {
-	std::cout << "Points cleared" << std::endl;
 	points.clear();
 	Renderer::getInstance()->SetRenderMode(POINT);
 }

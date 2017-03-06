@@ -3,7 +3,6 @@
 #include <fstream>
 #include <iostream>
 #include "../glm/glm.hpp"
-#include "Sweep.h"
 #include <sstream>
 #include <istream>
 #include <vector>
